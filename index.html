@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dicas de Inglês do Allan</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Figtree:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{--bg:#EEF1F5;--surface:#FFFFFF;--ink:#16212E;--muted:#5A6676;--line:#D5DCE5;--accent:#FFD23F;--accent-ink:#16212E;
+--display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;--body:"Figtree",ui-sans-serif,system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme: dark){:root{--bg:#0F151D;--surface:#18212C;--ink:#EDF1F6;--muted:#9AA6B5;--line:#2A3542;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;padding:0 16px}
+.wrap{max-width:760px;margin:0 auto;padding-block:40px 64px;display:flex;flex-direction:column;gap:32px}
+header{display:flex;flex-direction:column;gap:14px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--display);font-size:clamp(36px,7vw,60px);font-weight:800;line-height:1.05;margin:0;text-wrap:balance}
+h1 .mask{background:var(--accent);color:var(--accent-ink);padding:0 .15em;border-radius:6px;display:inline-block;transform:rotate(-2deg)}
+p{margin:0;max-width:62ch;color:var(--muted);font-size:18px}
+ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+a.tip{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 12px;padding:16px 18px;background:var(--surface);border:1.5px solid var(--line);border-radius:12px;color:var(--ink);text-decoration:none}
+a.tip:hover,a.tip:focus-visible{border-color:var(--ink);outline:none}
+a.tip strong{font-family:var(--display);font-size:20px}
+a.tip span{font-family:var(--mono);font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Dicas de inglês · todos os níveis</span>
+    <h1>Uma dica por <span class="mask">dia</span>.</h1>
+    <p>Dicas interativas para praticar um pouco todo dia. Escolha uma, pratique e cumpra a missão do dia.</p>
+  </header>
+  <ul id="tips">
+    <!-- NOVAS DICAS ENTRAM AQUI, A MAIS RECENTE NO TOPO -->
+    <li><a class="tip" href="false-friends/"><strong>False Friends Trap</strong><span>05 out 2026</span></a></li>
+  </ul>
+</div>
+</body>
+</html>

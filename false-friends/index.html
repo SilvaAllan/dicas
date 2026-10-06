@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>False Friends Trap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: narrow single column — hero with a "disguise" headline, a deck of flip cards, then a story with traps to choose */
+:root{
+  --bg:#EEF1F5; --surface:#FFFFFF; --ink:#16212E; --muted:#5A6676; --line:#D5DCE5;
+  --accent:#FFD23F; --accent-ink:#16212E; --trap:#E5484D; --ok:#1F9D6B; --card-back:#16212E; --card-back-ink:#F3F5F8;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --body:"Figtree",ui-sans-serif,system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F151D; --surface:#18212C; --ink:#EDF1F6; --muted:#9AA6B5; --line:#2A3542;
+  --accent:#FFD23F; --accent-ink:#16212E; --trap:#FF6B6F; --ok:#3CCB8F; --card-back:#FFD23F; --card-back-ink:#16212E; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F151D; --surface:#18212C; --ink:#EDF1F6; --muted:#9AA6B5; --line:#2A3542;
+  --accent:#FFD23F; --accent-ink:#16212E; --trap:#FF6B6F; --ok:#3CCB8F; --card-back:#FFD23F; --card-back-ink:#16212E; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;padding:0 16px}
+.wrap{max-width:760px;margin:0 auto;padding-block:40px 64px;display:flex;flex-direction:column;gap:56px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+h1,h2{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.05}
+h1{font-size:clamp(40px,8vw,72px);font-weight:800;letter-spacing:-.02em}
+h1 .mask{background:var(--accent);color:var(--accent-ink);padding:0 .15em;border-radius:6px;display:inline-block;transform:rotate(-2deg)}
+h2{font-size:clamp(26px,4.5vw,34px);font-weight:800}
+p{margin:0;max-width:62ch}
+.hero{display:flex;flex-direction:column;gap:18px}
+.lead{font-size:18px;color:var(--muted)}
+.example{display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-size:17px}
+.chip{font-family:var(--mono);font-size:14px;padding:4px 10px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface)}
+.chip.bad{border-color:var(--trap);color:var(--trap);text-decoration:line-through}
+.chip.good{border-color:var(--ok);color:var(--ok)}
+section{display:flex;flex-direction:column;gap:20px}
+.head{display:flex;flex-direction:column;gap:8px}
+.deck{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.card{perspective:900px;border:0;padding:0;background:none;cursor:pointer;height:190px;font:inherit;color:inherit;text-align:left}
+.card:focus-visible{outline:3px solid var(--accent);outline-offset:4px;border-radius:14px}
+.inner{position:relative;width:100%;height:100%;transition:transform .55s cubic-bezier(.2,.8,.2,1);transform-style:preserve-3d}
+.card.flipped .inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:14px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.front{background:var(--surface);border:1.5px solid var(--line)}
+.back{background:var(--card-back);color:var(--card-back-ink);transform:rotateY(180deg)}
+.word{font-family:var(--display);font-size:30px;font-weight:800;letter-spacing:-.01em}
+.looks{font-size:14px;color:var(--muted)}
+.looks b{color:var(--trap);font-weight:700}
+.tap{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.means{font-size:13px;font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase;opacity:.7}
+.real{font-family:var(--display);font-size:24px;font-weight:800;line-height:1.1}
+.ex{font-size:14px;line-height:1.4}
+.progress{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.story{background:var(--surface);border:1.5px solid var(--line);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:16px}
+.msg-head{display:flex;align-items:center;gap:12px;padding-bottom:14px;border-bottom:1.5px dashed var(--line)}
+.avatar{width:40px;height:40px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-family:var(--display);font-weight:800}
+.msg-head small{display:block;color:var(--muted);font-size:13px}
+.story p{font-size:17px;line-height:2.1}
+.gap{display:inline-flex;gap:4px;vertical-align:middle;flex-wrap:wrap}
+.opt{font:500 15px var(--body);padding:3px 11px;border-radius:8px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer;line-height:1.5}
+.opt:hover{border-color:var(--ink)}
+.opt:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.opt.right{background:var(--ok);border-color:var(--ok);color:#fff}
+.opt.wrong{border-color:var(--trap);color:var(--trap);text-decoration:line-through}
+.opt:disabled{cursor:default}
+.feedback{font-size:15px;color:var(--muted);min-height:1.5em}
+.score{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.score strong{font-family:var(--display);font-size:22px}
+.btn{font:700 15px var(--body);padding:10px 18px;border-radius:10px;border:0;background:var(--ink);color:var(--bg);cursor:pointer}
+.btn:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+footer{border-top:1.5px solid var(--line);padding-top:20px;color:var(--muted);font-size:15px;display:flex;flex-direction:column;gap:6px}
+@media (prefers-reduced-motion: reduce){.inner{transition:none}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="hero">
+    <span class="eyebrow">Dica de inglês da semana · todos os níveis</span>
+    <h1>Algumas palavras usam <span class="mask">disfarce</span>.</h1>
+    <p class="lead">Elas parecem português, mas significam outra coisa. São os <strong>false friends</strong> (falsos cognatos), e pegam alunos de todos os níveis, do iniciante ao avançado.</p>
+    <div class="example">
+      <span>"I</span><span class="chip bad">pretend</span><span class="chip good">intend</span><span>to travel next year."</span>
+    </div>
+  </header>
+
+  <section>
+    <div class="head">
+      <span class="eyebrow">Passo 1 · Conheça os suspeitos</span>
+      <h2>Toque em cada carta para ver a verdade</h2>
+      <p class="progress" id="flipCount" aria-live="polite">0 de 10 reveladas</p>
+    </div>
+    <div class="deck" id="deck"></div>
+  </section>
+
+  <section>
+    <div class="head">
+      <span class="eyebrow">Passo 2 · Encontre as armadilhas</span>
+      <h2>Ajude a Bia a corrigir a mensagem</h2>
+      <p>A Bia é uma estudante brasileira que mora em Toronto. Ela está escrevendo para a professora de inglês. Escolha a palavra correta em cada lacuna.</p>
+    </div>
+    <div class="story">
+      <div class="msg-head">
+        <div class="avatar" aria-hidden="true">B</div>
+        <div><strong>Bia</strong><small>Mensagem para a professora de inglês</small></div>
+      </div>
+      <p id="story"></p>
+      <div class="feedback" id="feedback" aria-live="polite">Escolha uma palavra para começar.</div>
+      <div class="score">
+        <strong id="score">0 / 6</strong>
+        <button class="btn" id="reset" type="button">Tentar de novo</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <strong style="color:var(--ink)">Sua missão da semana</strong>
+    <span>Use duas dessas palavras em frases reais sobre a sua vida e traga para a nossa próxima aula!</span>
+  </footer>
+</div>
+
+<script>
+const cards=[
+ ["pretend","pretender","fingir","Kids love to pretend they are superheroes."],
+ ["actually","atualmente","na verdade","I thought he was 30. Actually, he's 45."],
+ ["push","puxar","empurrar","Push the door to open it."],
+ ["library","livraria","biblioteca","I borrowed this book from the library."],
+ ["parents","parentes","pais (mãe e pai)","My parents live in Curitiba."],
+ ["fabric","fábrica","tecido","This shirt is made of a soft fabric."],
+ ["exquisite","esquisito","requintado, refinado","We had an exquisite dinner."],
+ ["college","colégio","faculdade","She studies engineering in college."],
+ ["lunch","lanche","almoço","Let's have lunch at noon."],
+ ["eventually","eventualmente","no fim, com o tempo","It was hard, but eventually I passed the test."]
+];
+const deck=document.getElementById('deck');const seen=new Set();
+cards.forEach(([w,pt,real,ex],i)=>{
+ const b=document.createElement('button');b.className='card';b.type='button';
+ b.setAttribute('aria-label',`${w}. Toque para ver o significado real`);
+ b.innerHTML=`<div class="inner"><div class="face front"><span class="word">${w}</span><span class="looks">Parece <b>${pt}</b>… mas não é!</span><span class="tap">Toque para revelar</span></div><div class="face back"><span class="means">Significa de verdade</span><span class="real">${real}</span><span class="ex">"${ex}"</span></div></div>`;
+ b.addEventListener('click',()=>{b.classList.toggle('flipped');seen.add(i);document.getElementById('flipCount').textContent=`${seen.size} de 10 reveladas`+(seen.size===10?' · mandou bem!':'');});
+ deck.appendChild(b);
+});
+
+const parts=[
+ "Hi teacher! Last weekend I visited my ",{o:["parents","relatives"],a:1,why:"Parentes (tios, primos) = relatives. Parents = pai e mãe."}," in Toronto. They are really nice. On Saturday we went to a ",{o:["bookstore","library"],a:0,why:"Ela comprou livros, então é bookstore (livraria). Library é biblioteca, onde você pega livros emprestados."}," and I bought two novels. Then we had ",{o:["lunch","a snack"],a:1,why:"Um lanchinho num café é snack (lanche). Lunch é almoço."}," in a small café. ",{o:["Actually","Currently"],a:1,why:"Atualmente = currently. Actually = na verdade."},", I'm studying a lot for my exams, and I ",{o:["pretend","intend"],a:1,why:"Pretender (ter a intenção) = intend. Pretend = fingir."}," to apply to ",{o:["college","school"],a:0,why:"Faculdade = college (ou university). Colégio = school."}," next year. See you soon!"
+];
+const story=document.getElementById('story');const fb=document.getElementById('feedback');const sc=document.getElementById('score');
+let score=0,done=0;
+function build(){
+ story.innerHTML='';score=0;done=0;sc.textContent='0 / 6';fb.textContent='Escolha uma palavra para começar.';
+ parts.forEach(p=>{
+  if(typeof p==='string'){story.append(p);return;}
+  const g=document.createElement('span');g.className='gap';
+  p.o.forEach((t,j)=>{
+   const o=document.createElement('button');o.type='button';o.className='opt';o.textContent=t;
+   o.addEventListener('click',()=>{
+    const btns=g.querySelectorAll('.opt');btns.forEach(x=>x.disabled=true);
+    btns[p.a].classList.add('right');done++;
+    if(j===p.a){score++;fb.textContent='✓ Isso! '+p.why;}else{o.classList.add('wrong');fb.textContent='✗ Caiu na armadilha! '+p.why;}
+    sc.textContent=`${score} / 6`;
+    if(done===6)fb.textContent+=score===6?'  Nota máxima, nenhuma armadilha te pegou!':`  Você acertou ${score} de 6. Tente de novo para vencer as armadilhas!`;
+   });
+   g.appendChild(o);
+  });
+  story.appendChild(g);
+ });
+}
+document.getElementById('reset').addEventListener('click',build);
+build();
+</script>
+</body>
+</html>
